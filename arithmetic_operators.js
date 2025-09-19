@@ -28,7 +28,7 @@ console.log(c);
 console.log(c == a + b);
 console.log();
 
-let d=a++;
+let d = a++;
 console.log(d);
 console.log(a);
 
