@@ -2,7 +2,7 @@ const testCase1 = "LZ";
 const testCase2 = "L Z";
 const testCase3 = "L ZL";
 
-const testCaseToUse = "     ";
+const testCaseToUse = testCase3;
 
 let preyDistance = -1;
 let preyDistanceTemp = 99;
