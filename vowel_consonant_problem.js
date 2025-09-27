@@ -8,37 +8,50 @@ function isConsonant(charecter) {
 
 function convert(text) {
   let convertedString = text[0];
+  let convertedSubstring = "";
+  // console.log(convertedString);
 
   if (isConsonant(text[0])) {
     if (isVowel(text[1])) {
       convertedString += text[1];
-    } 
+    } else {
+      convertedSubstring += "," + text[1];
+    }
+
     if (isConsonant(text[2])) {
       convertedString += text[2];
+    } else {
+      convertedSubstring += "," + text[2];
     }
 
     if (isVowel(text[3])) {
       convertedString += text[3];
+    } else {
+      convertedSubstring += "," + text[3];
     }
 
     if (isConsonant(text[4])) {
       convertedString += "," + text[4];
+    } else {
+      convertedSubstring += "," + text[4];
     }
-  } else {
+  }
+  
+  else {
     if (isConsonant(text[1])) {
       convertedString += text[1];
+    } else {
+      convertedSubstring += "," + text[1];
     }
 
     if (isVowel(text[2])) {
       convertedString += text[2];
-    }
-
-    if (isConsonant(text[3])) {
-      convertedString += "," + text[3];
+    } else {
+      convertedSubstring += "," + text[2];
     }
   }
 
-  return convertedString;
+  return convertedString + convertedSubstring;
 }
 
 function displayMessage(message) {
