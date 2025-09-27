@@ -1,5 +1,5 @@
 function isVowel(charecter) {
-  return charecter === 'a' || charecter === 'e' || charecter === 'i' || charecter === 'o' || charecter === 'u';   
+  return charecter === 'a' || charecter === 'e' || charecter === 'i' || charecter === 'o' || charecter === 'u';
 }
 
 function isConsonant(charecter) {
@@ -7,7 +7,24 @@ function isConsonant(charecter) {
 }
 
 function convert(text) {
-  let convertedString = "ab,c";
+  let convertedString = "";
+
+  if (isVowel(text[0])) {
+    convertedString += text[0];
+  }
+
+  if (isConsonant(text[1])) {
+    convertedString += text[1];
+  }
+
+  if (isVowel(text[2])) {
+    convertedString += text[2];
+  }
+
+  if (isConsonant(text[2])) {
+    convertedString += "," + text[2];
+  }
+
   return convertedString;
 }
 
