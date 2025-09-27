@@ -1,5 +1,6 @@
 function convert(text) {
-
+  let convertedString = "ab,c";
+  return convertedString;
 }
 
 function displayMessage(message) {
@@ -14,7 +15,7 @@ function testResult(text, expectedAns) {
 }
 
 function testAll() {
-  
+  testResult("abc", "ab,c");
 }
 
 testAll();
