@@ -7,6 +7,10 @@ function isConsonant(charecter) {
 }
 
 function convert(text) {
+  if (text.length === 0) {
+    return "";
+  }
+
   let convertedString = text[0];
   let convertedSubstring = "";
 
@@ -70,6 +74,9 @@ function testAll() {
   testResult("apple", "ape,p,l");
   testResult("there", "tere,h");
   testResult("abyss", "ab,y,s,s");
+  testResult("aaaeis", "as,a,a,e,i");
+  testResult("", "");
+  testResult("aby$", "ab,y,$");
 }
 
 testAll();
