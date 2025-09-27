@@ -8,7 +8,6 @@ function minDistance(candidate) {
 
   for (let index = 1; index < candidate.length; index++) {
     if (!isVowel(candidate[currentIndex])) {
-      console.log(candidate[currentIndex]);
       currentIndex++;
       index++;
     }
