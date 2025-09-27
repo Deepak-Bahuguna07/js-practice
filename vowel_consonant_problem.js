@@ -14,42 +14,20 @@ function convert(text) {
   let convertedString = text[0];
   let convertedSubstring = "";
 
-  if (isConsonant(convertedString[0])) {
-    for (let index = 1; index < text.length; index++) {
-      if (isConsonant(convertedString[convertedString.length - 1])) {
-        if (isVowel(text[index])) {
-          convertedString += text[index];
-        } else {
-          convertedSubstring += "," + text[index];
-        }
-      }
-
-      else {
-        if (isConsonant(text[index])) {
-          convertedString += text[index];
-        } else {
-          convertedSubstring += "," + text[index];
-        }
+  for (let index = 1; index < text.length; index++) {
+    if (isConsonant(convertedString[convertedString.length - 1])) {
+      if (isVowel(text[index])) {
+        convertedString += text[index];
+      } else {
+        convertedSubstring += "," + text[index];
       }
     }
-  }
 
-  else {
-    for (let index = 1; index < text.length; index++) {
-      if (isConsonant(convertedString[convertedString.length - 1])) {
-        if (isVowel(text[index])) {
-          convertedString += text[index];
-        } else {
-          convertedSubstring += "," + text[index];
-        }
-      }
-
-      else {
-        if (isConsonant(text[index])) {
-          convertedString += text[index];
-        } else {
-          convertedSubstring += "," + text[index];
-        }
+    else {
+      if (isConsonant(text[index])) {
+        convertedString += text[index];
+      } else {
+        convertedSubstring += "," + text[index];
       }
     }
   }
