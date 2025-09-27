@@ -7,53 +7,46 @@ function isConsonant(charecter) {
 }
 
 function convert(text) {
-  let currentIndex = 0;
   let convertedString = text[0];
   let convertedSubstring = "";
 
-  if (isConsonant(text[currentIndex])) {
-    currentIndex++;
-    if (isVowel(text[currentIndex])) {
-      convertedString += text[currentIndex];
-    } else {
-      convertedSubstring += "," + text[currentIndex];
-    }
-    currentIndex++;
+  if (isConsonant(convertedString[0])) {
+    for (let index = 1; index < text.length; index++) {
+      if (isConsonant(convertedString[convertedString.length - 1])) {
+        if (isVowel(text[index])) {
+          convertedString += text[index];
+        } else {
+          convertedSubstring += "," + text[index];
+        }
+      }
 
-    if (isConsonant(text[currentIndex])) {
-      convertedString += text[currentIndex];
-    } else {
-      convertedSubstring += "," + text[currentIndex];
-    }
-    currentIndex++;
-
-    if (isVowel(text[currentIndex])) {
-      convertedString += text[currentIndex];
-    } else {
-      convertedSubstring += "," + text[currentIndex];
-    }
-    currentIndex++;
-
-    if (isConsonant(text[currentIndex])) {
-      convertedString += "," + text[currentIndex];
-    } else {
-      convertedSubstring += "," + text[currentIndex];
+      else {
+        if (isConsonant(text[index])) {
+          convertedString += text[index];
+        } else {
+          convertedSubstring += "," + text[index];
+        }
+      }
     }
   }
 
   else {
-    currentIndex++;
-    if (isConsonant(text[currentIndex])) {
-      convertedString += text[currentIndex];
-    } else {
-      convertedSubstring += "," + text[currentIndex];
-    }
-    currentIndex++;
+    for (let index = 1; index < text.length; index++) {
+      if (isConsonant(convertedString[convertedString.length - 1])) {
+        if (isVowel(text[index])) {
+          convertedString += text[index];
+        } else {
+          convertedSubstring += "," + text[index];
+        }
+      }
 
-    if (isVowel(text[currentIndex])) {
-      convertedString += text[currentIndex];
-    } else {
-      convertedSubstring += "," + text[currentIndex];
+      else {
+        if (isConsonant(text[index])) {
+          convertedString += text[index];
+        } else {
+          convertedSubstring += "," + text[index];
+        }
+      }
     }
   }
 
@@ -73,6 +66,10 @@ function testResult(text, expectedAns) {
 
 function testAll() {
   testResult("abc", "ab,c");
+  testResult("hello", "helo,l");
+  testResult("apple", "ape,p,l");
+  testResult("there", "tere,h");
+  testResult("abyss", "ab,y,s,s");
 }
 
 testAll();
