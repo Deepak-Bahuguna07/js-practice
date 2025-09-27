@@ -1,3 +1,11 @@
+function isVowel(charecter) {
+  return charecter === 'a' || charecter === 'e' || charecter === 'i' || charecter === 'o' || charecter === 'u';   
+}
+
+function isConsonant(charecter) {
+  return !isVowel(charecter);
+}
+
 function convert(text) {
   let convertedString = "ab,c";
   return convertedString;
