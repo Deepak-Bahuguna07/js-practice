@@ -7,22 +7,35 @@ function isConsonant(charecter) {
 }
 
 function convert(text) {
-  let convertedString = "";
+  let convertedString = text[0];
 
-  if (isVowel(text[0])) {
-    convertedString += text[0];
-  }
+  if (isConsonant(text[0])) {
+    if (isVowel(text[1])) {
+      convertedString += text[1];
+    } 
+    if (isConsonant(text[2])) {
+      convertedString += text[2];
+    }
 
-  if (isConsonant(text[1])) {
-    convertedString += text[1];
-  }
+    if (isVowel(text[3])) {
+      convertedString += text[3];
+    }
 
-  if (isVowel(text[2])) {
-    convertedString += text[2];
-  }
+    if (isConsonant(text[4])) {
+      convertedString += "," + text[4];
+    }
+  } else {
+    if (isConsonant(text[1])) {
+      convertedString += text[1];
+    }
 
-  if (isConsonant(text[2])) {
-    convertedString += "," + text[2];
+    if (isVowel(text[2])) {
+      convertedString += text[2];
+    }
+
+    if (isConsonant(text[3])) {
+      convertedString += "," + text[3];
+    }
   }
 
   return convertedString;
@@ -41,6 +54,7 @@ function testResult(text, expectedAns) {
 
 function testAll() {
   testResult("abc", "ab,c");
+  testResult("hello", "helo,l");
 }
 
 testAll();
