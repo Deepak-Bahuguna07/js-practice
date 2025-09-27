@@ -6,33 +6,34 @@ function isConsonant(charecter) {
   return !isVowel(charecter);
 }
 
-function convert(text) {
-  if (text.length === 0) {
-    return "";
-  }
+function isDiffrent(lastCharecter, currentCharecter) {
+  return isVowel(lastCharecter) !== isVowel(currentCharecter);
+}
 
-  let convertedString = text[0];
-  let convertedSubstring = "";
+function convert(candidateString) {
+  let convertedStr = "";
+  let text = candidateString;
 
-  for (let index = 1; index < text.length; index++) {
-    if (isConsonant(convertedString[convertedString.length - 1])) {
-      if (isVowel(text[index])) {
-        convertedString += text[index];
+  while (text.length > 1) {
+    convertedStr += text[0];
+    let convertedSubStr = "";
+
+    for (let index = 1; index < text.length; index++) {
+      if (isDiffrent(convertedStr[convertedStr.length - 1], text[index])) {
+        convertedStr += text[index];
       } else {
-        convertedSubstring += "," + text[index];
+        convertedSubStr += text[index];
       }
     }
 
-    else {
-      if (isConsonant(text[index])) {
-        convertedString += text[index];
-      } else {
-        convertedSubstring += "," + text[index];
-      }
+    if (!(convertedSubStr === "")) {
+      convertedStr += ",";
     }
+
+    text = convertedSubStr;
   }
 
-  return convertedString + convertedSubstring;
+  return convertedStr + text;
 }
 
 function displayMessage(message) {
@@ -41,8 +42,8 @@ function displayMessage(message) {
 
 function testResult(text, expectedAns) {
   const actual = convert(text);
-  const symbol = actual === expectedAns ? "✅" : "❌";
-  const message = symbol + "expected :" + expectedAns + " | actual :" + actual;
+  const sign = actual === expectedAns ? "✅" : "❌";
+  const message = sign + "expected: " + expectedAns + " | actual: " + actual;
   displayMessage(message);
 }
 
@@ -53,8 +54,8 @@ function testAll() {
   testResult("there", "tere,h");
   testResult("abyss", "ab,y,s,s");
   testResult("aaaeis", "as,a,a,e,i");
+  testResult("aaabbb", "ab,ab,ab");
   testResult("", "");
-  testResult("aby$", "ab,y,$");
 }
 
 testAll();
