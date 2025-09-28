@@ -1,22 +1,37 @@
 function isVowel(charecter) {
-  return charecter === 'a' || charecter === 'e' || charecter === 'i' || charecter === 'o' || charecter === 'u';
+  switch (charecter) {
+    case 'a':
+      return true;
+    case 'e':
+      return true;
+    case 'i':
+      return true;
+    case 'o':
+      return true;
+    case 'u':
+      return true;
+    default:
+      return false;
+  }
 }
 
 function minDistance(candidate) {
   let minDistance = candidate.length;
   let currentIndex = 0;
+  let index = 1;
 
-  for (let index = 1; index < candidate.length; index++) {
+  while (index < candidate.length) {
     if (!isVowel(candidate[currentIndex])) {
       currentIndex++;
       index++;
     }
 
     if (isVowel(candidate[currentIndex]) && isVowel(candidate[index])) {
-      const difference = index - currentIndex;
-      minDistance = minDistance > difference ? difference : minDistance;
+      const distance = index - currentIndex;
+      minDistance = minDistance > distance ? distance : minDistance;
       currentIndex = index;
     }
+    index++;
   }
   minDistance = minDistance < candidate.length ? minDistance : -1;
   return minDistance;
