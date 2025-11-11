@@ -1,3 +1,3 @@
 console.log("Hello world");
-let a = 40;
+const  a = 40;
 console.log(a);
