@@ -97,10 +97,34 @@
 // const {y,...rest} = points;
 
 /*12*/
-const point1 = { x: 12, y: 13, z: 11 };
-const point2 = { x: 1, y: 3, z: 1 };
-const boring = function () {
-  return this;
-};
-const a = boring.bind(point2).bind(3);
-console.log(a.call(2));
+// const point1 = { x: 12, y: 13, z: 11 };
+// const point2 = { x: 1, y: 3, z: 1 };
+// const boring = function () {
+//   return this;
+// };
+// const a = boring.bind(point2).bind(3);
+// console.log(a.call(2));
+
+/*13*/
+// const addScore = function ({ scores }) {
+//   scores.push(12);
+// };
+// const scores = [2, 43, 2, 2];
+// const intern = { name: "ravi", scores };
+// addScore(intern)
+// console.log(intern);
+// console.log(scores);
+
+/*17*/
+// const number = [3, 2, 1];
+// const append = function (n) {
+//   return this.push(n);
+// };
+
+// const fun = function () {
+//   return [...arguments].map(this);
+// };
+
+// const crazyFun = fun.bind(append.bind(number));
+// console.log(crazyFun(...number));
+// console.log(...number);
