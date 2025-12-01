@@ -1,0 +1,18 @@
+const t ="23 fh".matchAll(/\w+/g)
+undefined
+> t
+Object [RegExp String Iterator] {}
+> const captured = [...t]
+undefined
+> captured
+[
+  [ "23", index: 0, input: "23 fh", groups: undefined ],
+  [ "fh", index: 3, input: "23 fh", groups: undefined ]
+]
+> captured
+[
+  [ "23", index: 0, input: "23 fh", groups: undefined ],
+  [ "fh", index: 3, input: "23 fh", groups: undefined ]
+]
+> [...t]
+[]
