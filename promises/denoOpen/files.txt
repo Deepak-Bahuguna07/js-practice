@@ -1,0 +1,314 @@
+# Assignment: Implement Unix `head` Command in JavaScript
+
+## Overview
+
+The `head` command is a Unix utility that displays the first part of files. Your
+task is to implement a JavaScript version of this command that mimics its
+behavior.
+
+The command should work with both files and standard input (stdin).
+
+## Basic Behavior
+
+By default, `head` displays the first **10 lines** of each specified file.
+
+### Example:
+
+Given a file `numbers.txt`:
+
+```
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+```
+
+**Command:**
+
+```bash
+deno head.js numbers.txt
+```
+
+**Expected Output:**
+
+```
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
+---
+
+## Options to Implement
+
+### 1. `-n <count>` — Specify Number of Lines
+
+Display the first `<count>` lines of each file.
+
+**Command:**
+
+```bash
+deno head.js -n 3 numbers.txt
+```
+
+**Expected Output:**
+
+```
+1
+2
+3
+```
+
+**Command:**
+
+```bash
+deno head.js -n 15 numbers.txt
+```
+
+**Expected Output:**
+
+```
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+```
+
+---
+
+### 2. `-c <bytes>` — Specify Number of Bytes
+
+Display the first `<bytes>` bytes of each file.
+
+Given a file `poem.txt`:
+
+```
+Roses are red,
+Violets are blue,
+Sugar is sweet,
+And so are you.
+```
+
+**Command:**
+
+```bash
+deno head.js -c 20 poem.txt
+```
+
+**Expected Output:**
+
+```
+Roses are red,
+Viole
+```
+
+**Note:** The output includes exactly 20 bytes (characters), including newlines.
+
+---
+
+### 3. Multiple Files
+
+When multiple files are specified, `head` should display the contents of each
+file with a header showing the filename.
+
+Given files `file1.txt`:
+
+```
+Line 1 of file1
+Line 2 of file1
+Line 3 of file1
+```
+
+And `file2.txt`:
+
+```
+Line 1 of file2
+Line 2 of file2
+Line 3 of file2
+```
+
+**Command:**
+
+```bash
+deno head.js -n 2 file1.txt file2.txt
+```
+
+**Expected Output:**
+
+```
+==> file1.txt <==
+Line 1 of file1
+Line 2 of file1
+
+==> file2.txt <==
+Line 1 of file2
+Line 2 of file2
+```
+
+## **Note:** There should be a blank line between different files' outputs.
+
+### 4. `-q` — Quiet Mode (Suppress Headers)
+
+Never print headers giving file names, even when processing multiple files.
+
+**Command:**
+
+```bash
+deno head.js -q -n 2 file1.txt file2.txt
+```
+
+**Expected Output:**
+
+```
+Line 1 of file1
+Line 2 of file1
+Line 1 of file2
+Line 2 of file2
+```
+
+---
+
+## Reading from Standard Input
+
+When no file is specified, `head` should read from standard input.
+
+### Example 1: No File Specified
+
+**Command:**
+
+```bash
+echo -e "Line 1\nLine 2\nLine 3\nLine 4\nLine 5" | deno head.js -n 3
+```
+
+**Expected Output:**
+
+```
+Line 1
+Line 2
+Line 3
+```
+
+---
+
+## Error Handling
+
+Your implementation should handle errors gracefully:
+
+### File Not Found
+
+**Command:**
+
+```bash
+deno head.js nonexistent.txt
+```
+
+**Expected Output:**
+
+```
+head: nonexistent.txt: No such file or directory
+```
+
+### Multiple Files with Some Missing
+
+**Command:**
+
+```bash
+deno head.js file1.txt missing.txt file2.txt
+```
+
+**Expected Output:**
+
+```
+==> file1.txt <==
+Line 1 of file1
+Line 2 of file1
+Line 3 of file1
+Line 4 of file1
+Line 5 of file1
+Line 6 of file1
+Line 7 of file1
+Line 8 of file1
+Line 9 of file1
+Line 10 of file1
+
+head: missing.txt: No such file or directory
+
+==> file2.txt <==
+Line 1 of file2
+Line 2 of file2
+Line 3 of file2
+Line 4 of file2
+Line 5 of file2
+Line 6 of file2
+Line 7 of file2
+Line 8 of file2
+Line 9 of file2
+Line 10 of file2
+```
+
+### Invalid Option
+
+**Command:**
+
+```bash
+deno head.js -n abc file1.txt
+```
+
+**Expected Output:**
+
+```
+head: illegal line count -- abc
+```
+
+---
+
+## Edge Cases to Consider
+
+1. **Empty Files:** Should produce no output for that file.
+2. **Files Shorter Than Requested Lines:** Display all available lines/bytes.
+3. **Combining Options:** `-n` and `-c` should not be used together (last one
+   wins or show error).
+4. **Line Count of 0:** Should produce no output.
+5. **Files with No Trailing Newline:** Handle correctly without adding extra
+   newlines.
+
+---
+
+## Implementation Requirements
+
+1. Use deno.js for implementation
+2. Read command-line arguments to determine options and files
+3. Handle both file I/O and stdin operations
+4. Implement proper error handling
+5. Match the output format exactly as shown in examples
+
+---

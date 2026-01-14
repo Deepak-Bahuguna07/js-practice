@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "dev": "deno --watch sql.js"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1"
+  }
+}

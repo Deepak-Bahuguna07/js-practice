@@ -1,0 +1,10 @@
+// const encoder = new TextEncoder();
+// const a = await Deno.stdout.write(encoder.encode("Hello stdout-!\n"));
+// console.log({ a });
+console.log("ye bhi write hi kar rha hai");
+const a = prompt();
+console.log(a);
+Deno.stdout.write();
+// const writer = await Deno.stdout.writable.getWriter();
+// const arr = encoder.encode("Hello stdout!\n");
+// writer.write(arr);
