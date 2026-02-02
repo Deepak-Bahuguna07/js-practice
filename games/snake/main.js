@@ -2,13 +2,18 @@ import { listener } from "./server.js";
 import { decoder, encoder, grid } from "./setup.js";
 import { Snake } from "./snake.js";
 
-Deno.stdin.setRaw(true);
+// Deno.stdin.setRaw(true);
 
-const display = (snake) => {
-  console.clear();
-  console.log(grid.map((x) => x.join(" ")).join("\n"));
-  console.log("score: ", snake.score);
-  console.log(snake.position);
+const display = async (snake) => {
+  const screen = `${
+    grid.map((x) => x.join(" ")).join("\n")
+  }\n score: ${snake.score}\n`;
+
+  // Deno.stdout.write(encoder.encode("\x1b[2J\x1b[H" + screen));
+  // console.clear();
+  if (snake.isAlive) {
+    await snake.conn.write(encoder.encode("\x1b[2J\x1b[H" + `${screen}`));
+  }
 };
 
 const isInvalidPosition = (snake, [x, y]) =>
@@ -24,8 +29,8 @@ const createFood = (snake, food) => {
   }
 };
 
-// const snakeOnSnake = ([y, x], snake) =>
-//   snake.snakeBody.some((a) => a[1] === x && a[0] === y);
+const snakeOnSnake = ([y, x], snake) =>
+  snake.snakeBody.some((a) => a[1] === x && a[0] === y);
 
 const eatFood = (position, food) => {
   const index = food.findIndex((apple) =>
@@ -38,11 +43,31 @@ const eatFood = (position, food) => {
   return true;
 };
 
+const killTheSnake = async (snake, food) => { // connection cut karna hai`
+  console.log("kill main aaya.....");
+  try {
+    snake.conn.write(encoder.encode(`\n\nyou Scored ${snake.score}!`));
+    snake.snakeBody.forEach(([y, x]) => {
+      grid[y][x] = "x";
+      food.push({ y, x });
+    });
+
+    snake.snakeBody = [];
+    snake.isAlive = false;
+
+    console.log(snake);
+    await snake.conn.close();
+  } catch (_) {
+    console.log("died!");
+  }
+};
+
 const updateScreen = (snake, food) => {
+  if (snake.hasTouchedOtherSnake()) return killTheSnake(snake, food);
   const position = snake.position;
   let khanaKhaya = false;
   grid[position.y][position.x] = snake.symbol;
-  console.log(snake.snakeBody, food);
+  // console.log(snake.snakeBody, food);
   if (eatFood(position, food)) {
     snake.score++;
     createFood(snake, food);
@@ -57,7 +82,7 @@ const updateScreen = (snake, food) => {
 };
 
 const makeInitialGrid = (snake, food) => {
-  console.log({ food, snake });
+  // console.log({ food, snake });
   const { y } = snake.position;
   let i = 0;
 
@@ -103,30 +128,41 @@ async function executeInstruction(snake) {
 
   const buffer = new Uint8Array(16);
   while (true) {
+    // try {
     const n = await snake.conn.read(buffer);
-    if (buffer[0] === 113) Deno.exit();
-    console.log(buffer);
+    if (buffer[0] === 113) return killTheSnake(snake, food);
+    // console.log(buffer);
     const move = decoder.decode(buffer.slice(0, n)).trim();
     if (isInvalidMove(position, move)) continue;
     snake.turnSnake(commands[move]);
+    // } catch (_) {
+    //   console.log("died!");
+    //   // snake.conn.close();
+    //   break;
+    // }
   }
+
+  // return;
 }
 
 const main = async () => {
   const buffer = new Uint8Array(24);
+  const food = [];
+
   for await (const connection of listener) {
     console.log("connected!");
     await connection.write(encoder.encode("Enter symbol: "));
     const n = await connection.read(buffer);
     const symbol = decoder.decode(buffer.slice(0, n)).trim();
-    const snake = new Snake(1, connection, symbol);
-    const food = [];
+    const snake = new Snake(connection, symbol);
+    console.log(snake);
 
     makeInitialGrid(snake, food);
-    executeInstruction(snake, connection);
+    executeInstruction(snake);
 
     game(snake, food);
   }
+  console.log("bahar aa gya hai");
 };
 
 await main();

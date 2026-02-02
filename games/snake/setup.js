@@ -4,4 +4,4 @@ export const encoder = new TextEncoder();
 const createGrid = (row, coloums) =>
   Array.from({ length: row }, () => Array(coloums).fill(" "));
 
-export const grid = createGrid(20, 50);
+export const grid = createGrid(30, 50);

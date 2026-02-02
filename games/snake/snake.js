@@ -1,13 +1,33 @@
 import { grid } from "./setup.js";
 
 export class Snake {
-  constructor(snakeCount, conn, symbol = "*") {
+  static snakeCount = 0;
+  static snakeBodys = [];
+
+  constructor(conn, symbol = "*") {
+    this.id = Snake.snakeCount++;
     this.conn = conn;
     this.symbol = symbol;
     this.snakeBody = [];
     this.snakeLength = 5;
     this.score = 0;
-    this.position = { y: snakeCount, x: 4, direction: "E" };
+    this.position = { y: Snake.snakeCount, x: 4, direction: "E" };
+    Snake.snakeBodys.push(this.snakeBody);
+    this.isAlive = true;
+  }
+
+  hasTouchedOtherSnake() {
+    let touched = false;
+    for (let index = 0; index < Snake.snakeBodys.length; index++) {
+      if (this.id !== index && !touched) {
+        touched = Snake.snakeBodys[index].some((point) =>
+          this.position.x === point[1] && this.position.y === point[0]
+        );
+        // console.log({ point }, this.position);
+      }
+    }
+
+    return touched;
   }
 
   turnSnake(side) {
