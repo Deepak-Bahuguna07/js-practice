@@ -1,79 +1,82 @@
-const decoder = new TextDecoder();
-// const encoder = new TextEncoder();
-
-const createGrid = (row, coloums) =>
-  Array.from({ length: row }, () => Array(coloums).fill(" "));
+import { listener } from "./server.js";
+import { decoder, encoder, grid } from "./setup.js";
+import { Snake } from "./snake.js";
 
 Deno.stdin.setRaw(true);
 
-let score = 0;
-
-const grid = createGrid(20, 50);
-const snakeBody = [];
-
-const display = (position) => {
+const display = (snake) => {
   console.clear();
   console.log(grid.map((x) => x.join(" ")).join("\n"));
-  console.log("score: ", score);
-  console.log(position);
+  console.log("score: ", snake.score);
+  console.log(snake.position);
 };
 
-export const turnSnake = (position, side) => position.direction = side;
+const isInvalidPosition = (snake, [x, y]) =>
+  snake.snakeBody.some((a) => a[1] === x && a[0] === y);
 
-export const moveSnake = (position) => {
-  const commands = {
-    N: () => position.y = position.y ? position.y - 1 : grid.length - 1,
-    E: () => position.x = (position.x + 1) % grid[0].length,
-    S: () => position.y = (position.y + 1) % (grid.length),
-    W: () => position.x = position.x ? position.x - 1 : grid[0].length - 1,
-  };
-
-  return commands[position.direction]();
+const createFood = (snake, food) => {
+  while (food.length < 10) {
+    const y = Math.floor(Math.random() * grid.length);
+    const x = Math.floor(Math.random() * grid[0].length);
+    if (isInvalidPosition(snake, [x, y])) return createFood(snake, food);
+    grid[y][x] = "x";
+    food.push({ y, x });
+  }
 };
 
-const isInvalidPosition = (snack) => snakeBody.includes([snack.y, snack.x]);
+// const snakeOnSnake = ([y, x], snake) =>
+//   snake.snakeBody.some((a) => a[1] === x && a[0] === y);
 
-const createSnacks = (snack) => {
-  snack.y = Math.floor(Math.random() * grid.length);
-  snack.x = Math.floor(Math.random() * grid[0].length);
+const eatFood = (position, food) => {
+  const index = food.findIndex((apple) =>
+    apple.x === position.x && apple.y === position.y
+  );
 
-  if (isInvalidPosition(snack)) createSnacks(snack);
-  grid[snack.y][snack.x] = "x";
+  if (index === -1) return false;
+
+  food.splice(index, 1);
+  return true;
 };
 
-const updateScreen = (position, snake, snack) => {
-  if (snakeBody.length === snake.length) {
-    const tail = snakeBody.shift();
-    grid[tail[0]][tail[1]] = " ";
+const updateScreen = (snake, food) => {
+  const position = snake.position;
+  let khanaKhaya = false;
+  grid[position.y][position.x] = snake.symbol;
+  console.log(snake.snakeBody, food);
+  if (eatFood(position, food)) {
+    snake.score++;
+    createFood(snake, food);
+    khanaKhaya = true;
   }
 
-  grid[position.y][position.x] = "*";
-  if (snack.y === position.y && snack.x === position.x) {
-    score++;
-    createSnacks(snack);
-  }
-
-  snakeBody.push([position.y, position.x]);
+  snake.snakeBody.push([position.y, position.x]);
+  if (khanaKhaya) return;
+  const tail = snake.snakeBody.shift();
+  if (snakeOnSnake(tail, snake)) return;
+  grid[tail[0]][tail[1]] = " ";
 };
 
-const makeInitialGrid = ({ y }, snake, snack) => {
+const makeInitialGrid = (snake, food) => {
+  console.log({ food, snake });
+  const { y } = snake.position;
   let i = 0;
-  while (i < 5) {
-    snakeBody.push([y, i]);
-    grid[y][i] = snake[i];
+
+  while (i < snake.snakeLength) {
+    snake.snakeBody.push([y, i]);
+    grid[y][i] = snake.symbol;
     i++;
   }
 
-  createSnacks(snack);
+  createFood(snake, food);
 };
 
-const game = async (position, snake, snack) => {
+const game = async (snake, food) => {
   await new Promise(() =>
     setInterval(() => {
-      moveSnake(position);
-      display(position);
-      updateScreen(position, snake, snack);
-    }, 500)
+      snake.moveSnake();
+      updateScreen(snake, food);
+      display(snake);
+    }, 100)
   );
 };
 
@@ -89,35 +92,41 @@ const isInvalidMove = (position, move) => {
     !Object.values(invalidMoves).includes(move);
 };
 
-async function readInput(position) {
+async function executeInstruction(snake) {
+  const position = snake.position;
   const commands = {
-    w: () => turnSnake(position, "N"),
-    a: () => turnSnake(position, "W"),
-    s: () => turnSnake(position, "S"),
-    d: () => turnSnake(position, "E"),
+    "w": "N",
+    "s": "S",
+    "d": "E",
+    "a": "W",
   };
 
-  const buffer = new Uint8Array(10);
+  const buffer = new Uint8Array(16);
   while (true) {
-    const n = await Deno.stdin.read(buffer);
-    if (n) {
-      if (buffer[0] === 113) Deno.exit();
-      const move = decoder.decode(buffer.slice(0, n));
-      if (isInvalidMove(position, move)) continue;
-      commands[move]();
-    }
+    const n = await snake.conn.read(buffer);
+    if (buffer[0] === 113) Deno.exit();
+    console.log(buffer);
+    const move = decoder.decode(buffer.slice(0, n)).trim();
+    if (isInvalidMove(position, move)) continue;
+    snake.turnSnake(commands[move]);
   }
 }
 
-const main = () => {
-  const snake = "*****";
-  const position = { y: 5, x: 4, direction: "E" };
-  const snack = { y: 0, x: 0 };
+const main = async () => {
+  const buffer = new Uint8Array(24);
+  for await (const connection of listener) {
+    console.log("connected!");
+    await connection.write(encoder.encode("Enter symbol: "));
+    const n = await connection.read(buffer);
+    const symbol = decoder.decode(buffer.slice(0, n)).trim();
+    const snake = new Snake(1, connection, symbol);
+    const food = [];
 
-  makeInitialGrid(position, snake, snack);
-  readInput(position);
+    makeInitialGrid(snake, food);
+    executeInstruction(snake, connection);
 
-  game(position, snake, snack);
+    game(snake, food);
+  }
 };
 
 await main();
