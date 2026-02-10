@@ -9,8 +9,6 @@ const display = async (snake) => {
     grid.map((x) => x.join(" ")).join("\n")
   }\n score: ${snake.score}\n`;
 
-  // Deno.stdout.write(encoder.encode("\x1b[2J\x1b[H" + screen));
-  // console.clear();
   if (snake.isAlive) {
     await snake.conn.write(encoder.encode("\x1b[2J\x1b[H" + `${screen}`));
   }
@@ -56,6 +54,7 @@ const killTheSnake = async (snake, food) => { // connection cut karna hai`
     snake.isAlive = false;
 
     console.log(snake);
+    console.log(Snake.snakeBodys, Snake.snakeCount);
     await snake.conn.close();
   } catch (_) {
     console.log("died!");
@@ -128,18 +127,18 @@ async function executeInstruction(snake) {
 
   const buffer = new Uint8Array(16);
   while (true) {
-    // try {
-    const n = await snake.conn.read(buffer);
-    if (buffer[0] === 113) return killTheSnake(snake, food);
-    // console.log(buffer);
-    const move = decoder.decode(buffer.slice(0, n)).trim();
-    if (isInvalidMove(position, move)) continue;
-    snake.turnSnake(commands[move]);
-    // } catch (_) {
-    //   console.log("died!");
-    //   // snake.conn.close();
-    //   break;
-    // }
+    try {
+      const n = await snake.conn.read(buffer);
+      if (buffer[0] === 113) return killTheSnake(snake, food);
+      // console.log(buffer);
+      const move = decoder.decode(buffer.slice(0, n)).trim();
+      if (isInvalidMove(position, move)) continue;
+      snake.turnSnake(commands[move]);
+    } catch (_) {
+      console.log("died!");
+      // snake.conn.close();
+      break;
+    }
   }
 
   // return;

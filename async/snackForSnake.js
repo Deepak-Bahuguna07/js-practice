@@ -8,7 +8,7 @@ const createGrid = (row, coloums) => {
 };
 
 const grid = createGrid(20, 50);
-const text = "*****";
+const snake = "*****";
 const snakeBody = [];
 
 const display = () => {
@@ -29,7 +29,7 @@ export const moveSnake = ({ x, y, direction }) => {
   const commands = {
     N: () => ({ y: y === 0 ? grid.length - 1 : y - 1, x, direction }),
     E: () => ({ y, x: (x + 1) % grid[0].length, direction }),
-    S: () => ({ y: (y + 1) % (grid.length + text.length), x, direction }),
+    S: () => ({ y: (y + 1) % (grid.length + snake.length), x, direction }),
     W: () => ({ y, x: x === 0 ? grid[0].length - 1 : x - 1, direction }),
   };
 
@@ -37,7 +37,7 @@ export const moveSnake = ({ x, y, direction }) => {
 };
 
 const updateScreen = () => {
-  if (snakeBody.length === text.length) {
+  if (snakeBody.length === snake.length) {
     const tail = snakeBody.shift();
     grid[tail[0]][tail[1]] = " ";
   }
@@ -63,11 +63,11 @@ export const executeInstruction = (instruction) => {
 const findIndex = (index) => {
   let i = 0;
 
-  if (index < text.length) {
-    i = text.length - index - 1;
+  if (index < snake.length) {
+    i = snake.length - index - 1;
     index = 0;
   } else {
-    index = index - text.length + 1;
+    index = index - snake.length + 1;
   }
 
   return [i, index];
@@ -76,9 +76,9 @@ const findIndex = (index) => {
 const makeInitialGrid = (y, x) => {
   let [i, index] = findIndex(x);
 
-  while (i < text.length && index < grid[y].length - text.length) {
+  while (i < snake.length && index < grid[y].length - snake.length) {
     snakeBody.push([y, index]);
-    grid[y][index++] = text[i++];
+    grid[y][index++] = snake[i++];
   }
 };
 
@@ -98,10 +98,6 @@ const createSnacks = () => {
   grid[snack.y][snack.x] = "•";
 };
 
-const instruction = ()=> {
-  
-}
-
 const makeMarquee = (position) => {
   makeInitialGrid(position.y, position.x);
   const instructions = "LMMMMMMMMMMMRMMMMM";
@@ -118,6 +114,5 @@ const makeMarquee = (position) => {
 };
 
 let position = { y: 5, x: 4, direction: "E" };
-let snack = { y: 0, x: 0 };
 
 makeMarquee(position);

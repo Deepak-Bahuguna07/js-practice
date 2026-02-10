@@ -3,7 +3,7 @@ import { encoder } from "./paint.js";
 export const setUp = async () => {
   Deno.stdin.setRaw(true);
   await Deno.stdout.write(
-    encoder.encode("\x1b[?1000h\x1b[?1003h\x1b[?1006h\x1b[?25l"),
+    encoder.encode("\x1b[?1003h\x1b[?1006h\x1b[?25l"),
   );
 };
 
