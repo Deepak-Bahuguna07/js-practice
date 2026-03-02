@@ -9,7 +9,7 @@ export const setUp = async () => {
 
 export const cleanUp = async () => {
   await Deno.stdout.write(
-    encoder.encode("\x1b[?1000l\x1b[?1003l\x1b[?1006l\x1b[?25h"),
+    encoder.encode("\x1b[?1003l\x1b[?1006l\x1b[?25h"),
   );
   Deno.stdin.setRaw(false);
 };
