@@ -13,7 +13,7 @@ export const createApp = (pokemons, getPage) => {
 
   app.get("/", servePage);
   app.post("/type", serveType);
-  app.post("/pokemon", servePokemon);
+  app.get("/search-pokemon", servePokemon);
   app.get("*", serveStatic({ root: "./public" }));
 
   return app;

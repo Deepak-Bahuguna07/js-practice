@@ -3,7 +3,6 @@ import { Eta } from "eta";
 
 const getPage = (pokemons, type = "all") => {
   const eta = new Eta({ views: "./public/template" });
-  console.log(pokemons, type);
   return eta.render("./template.html", {
     pokemons,
     type,

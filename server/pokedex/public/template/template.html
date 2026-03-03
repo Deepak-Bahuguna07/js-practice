@@ -2,20 +2,19 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>pokemon</title>
   <link rel="stylesheet" href="/style.css">
+  <script src="script.js"></script>
 </head>
 
 <body>
   <div class="main">
     <header>
-      <form action="/pokemon" method="post">
+      <form action="/search-pokemon" method="post" id="search-pokemon-name">
         <input type="search" name="name" id="name" placeholder="Enter Pokemon Name">
         <button type="submit">Search</button>
       </form>
-      <form action="/type" method="post">
+      <form action="/type" method="post" id="pokemon-type">
         <select name="type" id="type" onchange="this.form.submit()">
           <option value="select">Select</option>
           <option value="all">all</option>
@@ -44,7 +43,7 @@
     <main>
       <% for(const pokemon of Object.values(it.pokemons)){ %>
         <% if(it.type==="all" || pokemon.types.includes(it.type)){%>
-          <div class="poke">
+          <div class="card">
             <div class="img">
               <img src=<%=pokemon.img %>
               alt= <%=pokemon.name%>

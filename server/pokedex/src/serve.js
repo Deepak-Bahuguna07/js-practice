@@ -19,9 +19,8 @@ export const serveType = async (context) => {
 };
 
 export const servePokemon = async (context) => {
-  const name = await getFormData(context, "name");
-  const pokemonData = context.get("pokemons")[name];
-  const page = context.get("getPage")({ name: pokemonData });
+  const { name } = await context.req.query();
+  const pokemon = context.get("pokemons")[name];
 
-  return context.html(page);
+  return context.json({ pokemon });
 };
