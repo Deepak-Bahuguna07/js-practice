@@ -5,17 +5,16 @@ export const servePage = (context) => {
   return context.html(page);
 };
 
-const getFormData = async (context, data) => {
-  const fd = await context.req.formData();
-  return fd.get(data);
-};
-
 export const serveType = async (context) => {
-  const type = await getFormData(context, "type");
+  console.log("servetype", context);
+  const { type } = await context.req.query();
   const pokemons = context.get("pokemons");
-  const page = context.get("getPage")(pokemons, type);
+  const filteredPokemons = Object.entries(pokemons).filter((pokemon) =>
+    type === "all" || pokemon[1].types.includes(type)
+  );
+  console.log(filteredPokemons);
 
-  return context.html(page);
+  return context.json({ ...filteredPokemons });
 };
 
 export const servePokemon = async (context) => {
@@ -24,3 +23,8 @@ export const servePokemon = async (context) => {
 
   return context.json({ pokemon });
 };
+
+export const serveAllPokemos = (context) => {
+  const pokemons = context.get("pokemons");
+  return context.json(pokemons);
+}
