@@ -1,94 +1,80 @@
-const createDiv = (classname) => {
-  const div = document.createElement("div");
-  div.classList.add(classname);
-  return div;
+const getTypesForPokemon = (types) => {
+  const template = types.map(type =>
+    ['span', { class: `type ${type}` }, type]);
+
+  return template;
 }
 
-const createTypeElm = (types) => {
-  const div = createDiv("types");
-  types.forEach(type => {
-    const span = document.createElement("span");
-    span.classList.add("type");
-    span.classList.add(type);
-    span.innerText = type;
-
-    div.appendChild(span);
-  });
-
-  return div;
+const createHTMLElement = (element, attrs) => {
+  const htmlElement = document.createElement(element);
+  for (const [key, val] of Object.entries(attrs)) {
+    htmlElement.setAttribute(key, val);
+  }
+  return htmlElement;
 }
 
-const createImageElm = ({ img, name }) => {
-  const container = createDiv("img");
-  const image = document.createElement("img");
-  image.setAttribute("src", img);
-  image.setAttribute("alt", name);
-  container.appendChild(image);
-  return container;
-}
+const renderFragment = ([element, attrs, ...content]) => {
+  const htmlElement = createHTMLElement(element, attrs);
+  if (content.length === 1 && (typeof content[0] !== "object")) {
+    htmlElement.textContent = content;
+    return htmlElement;
+  }
 
-const createOverview = ({ name, types }) => {
-  const container = createDiv("overview");
-  const nameDiv = document.createElement("div");
-  nameDiv.classList.add("name");
-  nameDiv.innerText = name;
-  const typeElm = createTypeElm(types);
-  container.append(nameDiv, typeElm)
-
-  return container;
-}
-
-const createTd = (classname, data) => {
-  const td = document.createElement("td");
-  td.classList.add(classname);
-  td.innerText = data;
-  return td;
-}
-
-const createTr = ([stat, value]) => {
-  const tr = document.createElement("tr");
-  const statname = createTd("stat", stat);
-  const statValue = createTd("value", value);
-  tr.append(statname, statValue);
-
-  return tr;
-}
-
-const createTable = (pokemon) => {
-  const table = document.createElement("table");
-  const tbody = document.createElement("tbody");
-
-  Object.entries(pokemon.stats).forEach((stat) => {
-    const tr = createTr(stat);
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-
-  return table
-}
-
-const createDetails = (pokemon) => {
-  const container = createDiv("details");
-  const table = createTable(pokemon);
-  container.appendChild(table);
-  return container;
-}
-
-const createInfo = (pokemon) => {
-  const info = createDiv("info");
-  const overview = createOverview(pokemon);
-  const details = createDetails(pokemon);
-  info.append(overview, details);
-
-  return info;
+  const children = content.map(renderFragment);
+  htmlElement.append(...children);
+  return htmlElement;
 }
 
 export const generateCard = (pokemon) => {
-  const card = createDiv("card");
-  const img = createImageElm(pokemon);
-  const info = createInfo(pokemon)
+  const dom = [
+    'div', { class: 'card' },
+    [
+      'div', { class: 'img' },
+      ['img', { src: pokemon.img, alt: pokemon.name }, '']
+    ],
+    [
+      'div', { class: 'info' },
+      [
+        'div', { class: 'overview' },
+        ['div', { class: "name" }, pokemon.name],
+        ['div', { class: "types" }, ...getTypesForPokemon(pokemon.types)]
+      ],
 
+      [
+        'div', { class: "details" },
+        ['table', {},
+          [
+            "tbody", {},
+            ['tr', {},
+              ['td', { class: "stat" }, 'Weight'],
+              ['td', { class: "value" }, pokemon.weight]
+            ],
+            ['tr', {},
+              ['td', { class: "stat" }, 'Base XP'],
+              ['td', { class: "value" }, pokemon["base-xp"]]
+            ],
+            ['tr', {},
+              ['td', { class: "stat" }, 'HP'],
+              ['td', { class: "value" }, pokemon.stats.hp]
+            ],
+            ['tr', {},
+              ['td', { class: "stat" }, 'Attack'],
+              ['td', { class: "value" }, pokemon.stats.attack]
+            ],
+            ['tr', {},
+              ['td', { class: "stat" }, 'Defense'],
+              ['td', { class: "value" }, pokemon.stats.defense]
+            ],
+            ['tr', {},
+              ['td', { class: "stat" }, 'Speed'],
+              ['td', { class: "value" }, pokemon.stats.speed]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ];
 
-  card.append(img, info);
-  return card;
+  return renderFragment(dom);
 }
+
